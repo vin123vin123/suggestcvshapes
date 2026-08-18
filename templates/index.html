@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Shape Finder</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; }
+    .preview { margin-top: 20px; }
+    img { max-width: 100%; height: auto; border: 1px solid #ddd; }
+    .controls { margin-top: 10px; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Shape Finder (OpenCV)</h1>
+  <form method="post" enctype="multipart/form-data">
+    <label>Upload image: <input type="file" name="image" accept="image/*" required></label>
+    <div class="controls">
+      <button type="submit">Detect Shapes</button>
+    </div>
+  </form>
+
+  {% if error %}
+    <p class="error">Error: {{ error }}</p>
+  {% endif %}
+
+  {% if result_image %}
+    <div class="preview">
+      <h2>Result</h2>
+      <img src="{{ result_image }}" alt="Processed image">
+      <p><a href="{{ result_image }}" download="shapes.png">Download result</a></p>
+    </div>
+  {% endif %}
+</body>
+</html>

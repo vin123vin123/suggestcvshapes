@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: suggestcvshapes
+    env: docker
+    region: oregon
+    branch: main
+    plan: starter
+    autoDeploy: true
