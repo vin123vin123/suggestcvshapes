@@ -5,6 +5,8 @@ from PIL import Image
 import io
 import base64
 import os
+import uuid
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -67,14 +69,9 @@ def detect_shapes_image_bytes(image_bytes):
     return buf.tobytes()
 
 
-def to_data_uri(img_bytes, mime="image/png"):
-    b64 = base64.b64encode(img_bytes).decode("utf-8")
-    return f"data:{mime};base64,{b64}"
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    result_image = None
+    result_url = None
     error = None
     if request.method == 'POST':
         if 'image' not in request.files:
@@ -85,11 +82,22 @@ def index():
         try:
             image_bytes = file.read()
             processed = detect_shapes_image_bytes(image_bytes)
-            result_image = to_data_uri(processed)
+
+            # ensure results dir exists under static
+            results_dir = os.path.join(app.static_folder or 'static', 'results')
+            os.makedirs(results_dir, exist_ok=True)
+
+            # create unique filename
+            fname = f"{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex}.png"
+            out_path = os.path.join(results_dir, fname)
+            with open(out_path, 'wb') as f:
+                f.write(processed)
+
+            result_url = url_for('static', filename=f"results/{fname}")
         except Exception as e:
             current_app.logger.exception('Failed to process image')
             error = str(e)
-    return render_template('index.html', result_image=result_image, error=error)
+    return render_template('index.html', result_url=result_url, error=error)
 
 
 if __name__ == '__main__':
