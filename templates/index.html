@@ -24,12 +24,13 @@
     <p class="error">Error: {{ error }}</p>
   {% endif %}
 
-  {% if result_image %}
+  {% if result_url %}
     <div class="preview">
       <h2>Result</h2>
-      <img src="{{ result_image }}" alt="Processed image">
-      <p><a href="{{ result_image }}" download="shapes.png">Download result</a></p>
+      <img src="{{ result_url }}" alt="Processed image">
+      <p><a href="{{ result_url }}" download>Download result</a></p>
     </div>
   {% endif %}
+
 </body>
 </html>
